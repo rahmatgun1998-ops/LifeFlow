@@ -11,7 +11,8 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#081624;--tx:#e8f3fa;--mu:#8fb0c4;--gl:rgba(20,48,72,.5);--gb:rgba(120,190,230,.2);--gs:0 10px 40px rgba(0,0,0,.4);--in:rgba(10,30,48,.55)}}
 :root[data-theme="dark"]{--bg:#081624;--tx:#e8f3fa;--mu:#8fb0c4;--gl:rgba(20,48,72,.5);--gb:rgba(120,190,230,.2);--gs:0 10px 40px rgba(0,0,0,.4);--in:rgba(10,30,48,.55)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box;margin:0}
+*{box-sizing:border-box;margin:0;scrollbar-width:none;-ms-overflow-style:none}
+*::-webkit-scrollbar{display:none;width:0;height:0}
 body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden;transition:background .5s,color .5s}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;backdrop-filter:blur(14px)}
 .blobs{position:fixed;inset:0;z-index:-1;overflow:hidden}
@@ -29,7 +30,7 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(-
 .btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}
 .ghost{background:var(--in);border:1px solid var(--gb);padding:11px 16px;border-radius:14px;font-weight:600;width:100%;display:flex;gap:8px;justify-content:center;align-items:center}
 input.f,select.f{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--gb);background:var(--in);color:var(--tx);font:inherit;margin-bottom:10px}
-.tg{width:46px;height:26px;border-radius:99px;background:var(--in);border:1px solid var(--gb);position:relative;transition:.3s;flex:none}.tg::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.3s;box-shadow:0 2px 6px rgba(0,0,0,.3)}.tg.on{background:var(--ok)}.tg.on::after{transform:translateX(20px)}#prof .glass{max-height:88vh;overflow:auto}@media(max-width:700px){nav{flex-wrap:wrap}nav .links{order:3;width:100%;flex:none}}
+.tg{width:46px;height:26px;border-radius:99px;background:var(--in);border:1px solid var(--gb);position:relative;transition:.3s;flex:none}.tg::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.3s;box-shadow:0 2px 6px rgba(0,0,0,.3)}.tg.on{background:var(--ok)}.tg.on::after{transform:translateX(20px)}#prof .glass{max-height:88vh;overflow:auto;scrollbar-width:none;-ms-overflow-style:none}#prof .glass::-webkit-scrollbar{display:none}@media(max-width:700px){nav{flex-wrap:wrap}nav .links{order:3;width:100%;flex:none}}
 .ic{width:32px;height:32px;border-radius:10px;background:var(--in);font-size:.85rem;flex:none;transition:.2s}.ic:hover{transform:scale(1.12)}.err{color:var(--no);font-size:.8rem;min-height:1.1em;margin-bottom:6px}.bar{height:8px;border-radius:9px;background:var(--in);overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pr),var(--pr2));border-radius:9px;transition:width .8s}
 .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.3rem;letter-spacing:-.02em}
 .logo img{width:38px;height:38px;border-radius:11px;box-shadow:0 4px 14px rgba(45,111,154,.4)}
@@ -66,6 +67,8 @@ nav .links button.on{background:linear-gradient(135deg,var(--pr),var(--pr2));col
 .menu{position:absolute;right:0;top:56px;width:270px;padding:14px;display:none;z-index:40}
 .menu.open{display:block;animation:rise .35s both}
 .menu p{font-size:.85rem;padding:8px 4px;border-bottom:1px solid var(--gb)}.menu p:last-child{border:0}
+nav.glass{position:-webkit-sticky;position:sticky;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);transition:border-radius .3s,box-shadow .3s}
+nav.glass.stuck{top:env(safe-area-inset-top,0px);border-radius:0 0 22px 22px;border-top-color:transparent}
 main{margin-top:22px}
 .view{display:none}.view.on{display:block}
 .head{display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:6px;margin-bottom:18px}
@@ -191,7 +194,7 @@ function authTab(k){$$('.tabs button').forEach(b=>b.classList.toggle('on',b.data
  const r=$('#rst');if(r)r.onclick=()=>{if(!val('un')||val('pw').length<4){ae('Isi username dan passcode baru (min. 4 karakter).');return}ae('');r.textContent='Passcode diperbarui ✓'}}
 $$('.tabs button').forEach(b=>b.onclick=()=>authTab(b.dataset.a));authTab('in');document.fonts&&document.fonts.ready.then(()=>eqH($('#aform')));
 function success(){$('#authcard').innerHTML=`<div class="pop"><div class="check"><svg viewBox="0 0 50 50"><path d="M10 26l10 10 20-22"/></svg></div><h3 style="margin:8px 0 0;justify-content:center">Berhasil masuk</h3><p class="hint">Membuka dashboard…</p></div>`;setTimeout(enter,1400)}
-function enter(){const n=S.user[0].toUpperCase()+S.user.slice(1);$('#auth').style.display='none';$('#app').style.display='block';$('#avt').textContent=n[0];S.user=n;go(location.hash.slice(1)||'dashboard')}
+function enter(){const n=S.user[0].toUpperCase()+S.user.slice(1);$('#auth').style.display='none';$('#app').style.display='block';S.user=n;setAv();go(location.hash.slice(1)||'dashboard')}
 function logout(){$('#app').style.display='none';$('#auth').style.display='grid';$('#authcard').innerHTML=`<div class="logo"><img class="lg-img" src="${$('.lg-img').src}" alt="">LifeFlow</div><div class="tabs"><button class="on" data-a="in">Masuk</button><button data-a="up">Daftar</button><button data-a="fg">Lupa passcode</button></div><div id="aform"></div>`;$$('.tabs button').forEach(b=>b.onclick=()=>authTab(b.dataset.a));authTab('in')}
 
 /* NAV */
@@ -297,13 +300,14 @@ const menu=$('#menu');
 function pm(k){if(!S.p.notif){menu.innerHTML='<h3>Notifikasi</h3><p>Notifikasi sedang dimatikan. Aktifkan lagi di Profil &amp; Pengaturan.</p>';menu.classList.toggle('open');return}menu.innerHTML=k==='n'?`<h3>Notifikasi</h3><p>⏰ Meeting Tim dimulai 09:00</p><p>📚 Jadwal CPNS - TWK pukul 16:00</p><p>💰 Gaji bulan ini sudah dicatat</p>`:`<h3>${S.user}</h3><p>👤 Ubah data diri</p><p>⚙️ Preferensi</p><p>🔒 Keamanan</p>`;menu.classList.toggle('open')}
 $('#bell').onclick=()=>pm('n');$('#avt').onclick=()=>openProf('p');$('#tm').onclick=theme;$('#hp').onclick=()=>{menu.classList.remove('open');$('#help').classList.add('open')};$('#lo').onclick=logout;$('#pcx').onclick=()=>$('#prof').classList.remove('open');$('#prof').onclick=e=>{if(e.target.id==='prof')$('#prof').classList.remove('open')};
 /* PROFIL & PENGATURAN */
+function setAv(){const a=$('#avt');a.style.overflow='hidden';a.style.padding='0';if(S.p.photo)a.innerHTML=`<img src="${S.p.photo}" alt="" style="width:100%;height:100%;object-fit:cover;display:block">`;else a.textContent=S.user[0].toUpperCase()}
 const isDark=()=>{const t=document.documentElement.dataset.theme;return t?t==='dark':matchMedia('(prefers-color-scheme:dark)').matches};
 const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
 function two(b,fn){let t;b.onclick=()=>{if(b.dataset.arm){clearTimeout(t);fn();return}b.dataset.arm=1;const o=b.innerHTML;b.textContent='Klik lagi untuk konfirmasi';b.style.background='var(--no)';b.style.color='#fff';t=setTimeout(()=>{delete b.dataset.arm;b.innerHTML=o;b.style.background='';b.style.color=''},3000)}}
 function openProf(tab){tab=tab||'p';menu.classList.remove('open');const b=$('#pb');$('#prof').classList.add('open');
  const tg=(k,l,on)=>`<div class="row" style="justify-content:space-between"><span>${l}</span><button class="tg ${on?'on':''}" data-k="${k}" role="switch" aria-checked="${!!on}" aria-label="${l}"></button></div>`;
  let h=`<div class="seg">${[['p','Profil'],['s','Pengaturan'],['k','Keamanan']].map(t=>`<button class="${t[0]===tab?'on':''}" data-pt="${t[0]}">${t[1]}</button>`).join('')}</div>`;
- if(tab==='p')h+=`<div style="text-align:center;margin-bottom:12px"><div class="av" style="width:72px;height:72px;font-size:1.8rem;margin:0 auto 8px">${esc(S.user[0].toUpperCase())}</div><b>${esc(S.user)}</b></div><input class="f" id="pn" placeholder="Nama" value="${esc(S.user)}" maxlength="40"><input class="f" id="pe" type="email" placeholder="Email" value="${esc(S.p.email)}"><input class="f" id="pp" placeholder="No. HP (opsional)" value="${esc(S.p.phone)}"><input class="f" id="pbio" placeholder="Bio singkat (opsional)" value="${esc(S.p.bio)}" maxlength="80"><div class="err" id="pmsg"></div><button class="btn" id="psv">Simpan perubahan</button><button class="ghost" id="pcl" style="margin-top:8px">Kosongkan No. HP &amp; bio</button>`;
+ if(tab==='p')h+=`<div style="text-align:center;margin-bottom:12px"><div class="av" style="width:84px;height:84px;font-size:2rem;margin:0 auto 8px;overflow:hidden">${S.p.photo?`<img src="${S.p.photo}" alt="Foto profil" style="width:100%;height:100%;object-fit:cover;display:block">`:esc(S.user[0].toUpperCase())}</div><b>${esc(S.user)}</b><div style="display:flex;gap:8px;justify-content:center;margin-top:10px"><button class="ghost" id="pfu" style="width:auto;padding:8px 14px;font-size:.85rem">📷 ${S.p.photo?'Ganti foto':'Unggah foto'}</button>${S.p.photo?'<button class="ghost" id="pfd" style="width:auto;padding:8px 14px;font-size:.85rem">Hapus foto</button>':''}</div><input type="file" id="pf" accept="image/*" hidden></div><input class="f" id="pn" placeholder="Nama" value="${esc(S.user)}" maxlength="40"><input class="f" id="pe" type="email" placeholder="Email" value="${esc(S.p.email)}"><input class="f" id="pp" placeholder="No. HP (opsional)" value="${esc(S.p.phone)}"><input class="f" id="pbio" placeholder="Bio singkat (opsional)" value="${esc(S.p.bio)}" maxlength="80"><div class="err" id="pmsg"></div><button class="btn" id="psv">Simpan perubahan</button><button class="ghost" id="pcl" style="margin-top:8px">Kosongkan No. HP &amp; bio</button>`;
  else if(tab==='s')h+=tg('notif','Notifikasi aktivitas',S.p.notif)+tg('remind','Pengingat harian',S.p.remind)+tg('dark','Mode gelap',isDark())+`<div class="err" id="pmsg"></div><button class="ghost" id="prs">Hapus semua data aplikasi</button>`;
  else h+=`<input class="f" id="np" type="password" placeholder="Password baru (min. 6 karakter)" autocomplete="new-password"><input class="f" id="nc" type="password" placeholder="Ulangi password baru" autocomplete="new-password"><div class="err" id="pmsg"></div><button class="btn" id="psp">Perbarui password</button><button class="ghost" id="pda" style="margin-top:14px">Hapus akun</button>`;
  b.innerHTML=h;
@@ -311,7 +315,10 @@ function openProf(tab){tab=tab||'p';menu.classList.remove('open');const b=$('#pb
  const wipe=()=>{['todos','tasks','tx','notes','ev','sch','habits'].forEach(k=>{S[k]=[]});S.st={target:30,used:0}};
  $$('[data-pt]',b).forEach(x=>x.onclick=()=>openProf(x.dataset.pt));
  $$('.tg',b).forEach(x=>x.onclick=()=>{const k=x.dataset.k;if(k==='dark')theme();else{S.p[k]=!S.p[k];if(k==='notif')$('#bell .dot').style.display=S.p.notif?'':'none'}openProf('s')});
- if(tab==='p'){$('#psv').onclick=()=>{const n=cap($('#pn').value.trim()),e=$('#pe').value.trim();if(!n){msg('Nama wajib diisi.');return}if(e&&!/^\S+@\S+\.\S+$/.test(e)){msg('Format email belum benar.');return}S.user=n;S.p.email=e;S.p.phone=$('#pp').value.trim();S.p.bio=$('#pbio').value.trim();$('#avt').textContent=n[0].toUpperCase();go(location.hash.slice(1));msg('Profil diperbarui.',1)};
+ if(tab==='p'){$('#pfu').onclick=()=>$('#pf').click();
+  $('#pf').onchange=e=>{const fl=e.target.files[0];if(!fl)return;if(!fl.type.startsWith('image/')){msg('File harus berupa gambar.');return}const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const s=256,cv=document.createElement('canvas');cv.width=cv.height=s;const m=Math.min(im.width,im.height);cv.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,s,s);S.p.photo=cv.toDataURL('image/jpeg',.85);setAv();openProf('p')};im.onerror=()=>msg('Gambar tidak bisa dibaca.');im.src=rd.result};rd.readAsDataURL(fl)};
+  const pd=$('#pfd');if(pd)pd.onclick=()=>{S.p.photo='';setAv();openProf('p')};
+  $('#psv').onclick=()=>{const n=cap($('#pn').value.trim()),e=$('#pe').value.trim();if(!n){msg('Nama wajib diisi.');return}if(e&&!/^\S+@\S+\.\S+$/.test(e)){msg('Format email belum benar.');return}S.user=n;S.p.email=e;S.p.phone=$('#pp').value.trim();S.p.bio=$('#pbio').value.trim();setAv();go(location.hash.slice(1));msg('Profil diperbarui.',1)};
   $('#pcl').onclick=()=>{S.p.phone='';S.p.bio='';$('#pp').value='';$('#pbio').value='';msg('No. HP dan bio dihapus.',1)}}
  if(tab==='s')two($('#prs'),()=>{wipe();go(location.hash.slice(1));msg('Semua data aplikasi sudah dihapus.',1)});
  if(tab==='k'){$('#psp').onclick=()=>{const a=$('#np').value,c=$('#nc').value;if(a.length<6){msg('Password minimal 6 karakter.');return}if(a!==c){msg('Konfirmasi password tidak sama.');return}S.pw=a;$('#np').value='';$('#nc').value='';msg('Password diperbarui.',1)};
@@ -319,6 +326,7 @@ function openProf(tab){tab=tab||'p';menu.classList.remove('open');const b=$('#pb
 $('#hx').onclick=()=>$('#help').classList.remove('open');
 document.addEventListener('click',e=>{if(!e.target.closest('#menu,#bell'))menu.classList.remove('open')});
 (()=>{const l=document.createElement('link');l.rel='icon';l.type='image/png';l.href=$('.lg-img').src;document.head.appendChild(l);const a=document.createElement('link');a.rel='apple-touch-icon';a.href=l.href;document.head.appendChild(a)})();
+addEventListener('scroll',()=>{const n=$('nav');if(n)n.classList.toggle('stuck',scrollY>16)},{passive:true});
 addEventListener('hashchange',()=>{if($('#app').style.display==='block')go(location.hash.slice(1))});
 </script>
 </body>
